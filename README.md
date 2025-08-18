@@ -2,3 +2,4 @@
 
 > <span style="color: #FF69B4; font-size: 1.1em">B</span><span style="color: #FF6347; font-size: 1.1em">y</span><span style="color: #00FA9A; font-size: 1.1em">:</span> <span style="background: linear-gradient(90deg, #FF0000, #FF8C00, #FFD700); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold">HycoreMC</span>  
 > <span style="color: #7CFC00">V</span><span style="color: #ADFF2F">e</span><span style="color: #32CD32">r</span><span style="color: #00FA9A">s</span><span style="color: #00FF7F">i</span><span style="color: #3CB371">o</span><span style="color: #2E8B57">n</span><span style="color: #008000">:</span> <span style="color: #00FF00; background-color: black; padding: 0 5px; border: 1px solid #00FF00">1.0.1</span>
+system Control panel mekanism menu 
