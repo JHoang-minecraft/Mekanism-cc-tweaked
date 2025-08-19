@@ -1,62 +1,55 @@
 local reactor = peripheral.find("fissionReactor")
 
--- Hiệu ứng loading
 local function loading()
-    for i=1,3 do
-        term.clear()
+    term.clear()
+    local anim = {"|", "/", "-", "\\"}
+    for i=1,8 do
         term.setCursorPos(1,1)
-        term.write("LOADING" .. string.rep(".",i))
-        sleep(0.3)
+        term.write("BOOTING "..anim[(i%4)+1])
+        sleep(0.15)
     end
 end
 
--- Xoá chương trình
 local function uninstall()
-    if not fs.exists("startup.lua") then
-        print("ERROR: Not installed!")
-        return false
-    end
-    
     fs.delete("startup.lua")
     print("UNINSTALLED! Restart computer.")
     return true
 end
 
--- Menu chính
-local function mainMenu()
+local function main()
+    loading()
+    
     while true do
         term.clear()
-        print("==== MEKANISM CONTROL ====")
+        print("MEKANISM REMOTE CONTROL")
         print("1. Toggle Reactor")
         print("2. Emergency Stop")
-        print("3. Reactor Status")
-        print("9. UNINSTALL")  -- Chức năng gỡ bỏ
+        print("3. Status")
+        print("9. UNINSTALL")
         print("0. Exit")
-        write("Select: ")
+        write("> ")
 
-        local choice = read()
-        if choice == "1" then
+        local cmd = read()
+        if cmd == "1" then
             reactor.setActive(not reactor.isActivated())
-        elseif choice == "2" then
+        elseif cmd == "2" then
             reactor.setActive(false)
-            print("EMERGENCY SHUTDOWN!")
+            print("SHUTDOWN!")
             sleep(1)
-        elseif choice == "3" then
+        elseif cmd == "3" then
             print("Temp:", reactor.getTemperature(), "K")
-            print("Status:", reactor.isActivated() and "ACTIVE" or "INACTIVE")
+            print("Fuel:", reactor.getFuel())
             sleep(2)
-        elseif choice == "9" then
-            if uninstall() then break end  -- Thoát menu sau khi gỡ
-        elseif choice == "0" then
+        elseif cmd == "9" then
+            if uninstall() then break end
+        elseif cmd == "0" then
             break
         end
     end
 end
 
--- Chạy chương trình
-loading()
 if reactor then
-    mainMenu()
+    main()
 else
-    print("ERROR: No reactor found!")
+    print("ERROR: No reactor detected!")
 end
