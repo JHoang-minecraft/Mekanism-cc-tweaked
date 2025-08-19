@@ -1,148 +1,17 @@
 
-local monitor, adapter
-local monitorSide = nil
-
-for _, side in pairs(peripheral.getNames()) do
-  local pType = peripheral.getType(side)
-  if pType == "monitor" then
-    monitor = peripheral.wrap(side)
-    monitorSide = side:match("^(%w+)%_") or side
-    monitor.setTextScale(0.5)
-    break
-  end
+if not fs.exists("APISystem/APICore.lua") then
+    error("APPLICATION CRASHER! MISSING APICORE")
 end
 
-if not monitor then
-  print("ERROR: No monitor found!")
-  return
-end
+local API = require("APISystem.APICore")
+print("APICore loaded successfully!")
 
-for _, side in pairs({"top","bottom","left","right","front","back"}) do
-  if peripheral.getType(side) == "fissionReactorLogicAdapter" then
-    adapter = peripheral.wrap(side)
-    break
-  end
-end
+local packages = {"GPU.package", "System.package", "menu.package", "API.package"}
 
-if not adapter then
-  monitor.clear()
-  monitor.setCursorPos(1,1)
-  monitor.write("Connect to Reactor Adapter!")
-  return
-end
-
-local function safeGetStatus()
-  if adapter.getStatus then
-    return adapter.getStatus()
-  elseif adapter.isActive then
-    return adapter.isActive()
-  else
-    return false
-  end
-end
-
-local function drawMenu()
-  monitor.clear()
-  monitor.setCursorPos(1,1)
-  monitor.write("=== REACTOR CONTROL ===")
-  
-  monitor.setCursorPos(2,3)
-  monitor.write("┌─────────────────┐")
-  monitor.setCursorPos(2,4)
-  monitor.write("│ 1. Toggle Reactor │")
-  monitor.setCursorPos(2,5)
-  monitor.write("└─────────────────┘")
-  
-  monitor.setCursorPos(2,7)
-  monitor.write("┌─────────────────┐")
-  monitor.setCursorPos(2,8)
-  monitor.write("│ 2. Emergency Stop │")
-  monitor.setCursorPos(2,9)
-  monitor.write("└─────────────────┘")
-  
-  monitor.setCursorPos(2,11)
-  monitor.write("┌─────────────────┐")
-  monitor.setCursorPos(2,12)
-  monitor.write("│ 3. Reactor Info  │")
-  monitor.setCursorPos(2,13)
-  monitor.write("└─────────────────┘")
-  
-  monitor.setCursorPos(2,15)
-  monitor.write("┌─────────────────┐")
-  monitor.setCursorPos(2,16)
-  monitor.write("│ 0. Exit Program  │")
-  monitor.setCursorPos(2,17)
-  monitor.write("└─────────────────┘")
-  monitor.setTextScale(0.5)
-  monitor.setBackgroundColor(colors.black)
-  monitor.setTextColor(colors.white)
-  monitor.clear()
-end
-
-local function updateStatus()
-  local status = safeGetStatus()
-  monitor.setCursorPos(20,4)
-  monitor.write(status and "[RUNNING]" or "[STOPPED]")
-  
-  if adapter.getTemperature then
-    local temp = adapter.getTemperature() - 273.15
-    monitor.setCursorPos(1,19)
-    monitor.write(("Temp: %.2f °C"):format(temp))
-  end
-end
-
-drawMenu()
-updateStatus()
-
-while true do
-  local event, side, x, y = os.pullEvent()
-  
-  if event == "monitor_touch" and side == monitorSide then
-    -- Toggle Reactor
-    if y >= 4 and y <= 5 then
-      if safeGetStatus() then
-        adapter.scram()
-      else
-        if adapter.activate then
-          adapter.activate()
-        end
-      end
-      updateStatus()
-    
-    -- Emergency Stop
-    elseif y >= 8 and y <= 9 then
-      if adapter.scram then
-        adapter.scram()
-      end
-      monitor.setCursorPos(20,8)
-      monitor.write("[STOPPED]")
-      sleep(1)
-      drawMenu()
-      updateStatus()
-    
-    -- Reactor Info
-    elseif y >= 12 and y <= 13 then
-      if adapter.getActualBurnRate and adapter.getMaxBurnRate then
-        monitor.setCursorPos(1,20)
-        monitor.write(("Burn Rate: %d/%d"):format(
-          adapter.getActualBurnRate(),
-          adapter.getMaxBurnRate()
-        ))
-      end
-      
-      if adapter.getFuelFilledPercentage then
-        monitor.setCursorPos(1,21)
-        monitor.write(("Fuel: %.1f%%"):format(
-          adapter.getFuelFilledPercentage() * 100
-        ))
-      end
-    
-    -- Exit
-    elseif y >= 16 and y <= 17 then
-      monitor.clear()
-      monitor.setCursorPos(1,1)
-      monitor.write("Program terminated")
-      return
+for _, pkg in ipairs(packages) do
+    for i = 1, 20 do
+        print("Loading " .. pkg .. " (" .. i .. "/20)")
     end
-  end
 end
+
+print("Application Install complete! Enter Configure =))")
