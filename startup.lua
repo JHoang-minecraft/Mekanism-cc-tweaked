@@ -38,7 +38,7 @@ drawMenu()
 while true do
     local event, side, x, y = os.pullEvent("monitor_touch")
     
-    if y == 2 then  )
+    if y == 2 then  
         local status = adapter.getStatus()
         adapter.setActive(status == "inactive")
         monitor.setCursorPos(15,2)
