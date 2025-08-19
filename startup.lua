@@ -1,27 +1,20 @@
 
-local function findLogicAdapter()
-    for _, side in pairs({"front","back","left","right","top","bottom"}) do
-        if peripheral.isPresent(side) then
-            local pType = peripheral.getType(side)
-            if pType == "fissionReactorLogicAdapter" then
-                print("CONNECTED TO LOGIC ADAPTER ("..side..")")
-                return peripheral.wrap(side)
-            end
-        end
+local adapter
+for _, side in pairs({"front","back","left","right","top","bottom"}) do
+    if peripheral.getType(side) == "fissionReactorLogicAdapter" then
+        adapter = peripheral.wrap(side)
+        print("CONNECTED TO LOGIC ADAPTER ("..side..")")
+        break
     end
-    return nil
 end
 
-local reactor = findLogicAdapter()
-
-if not reactor then
-    print("DEBUG: Nearby peripherals:")
-    for _, side in pairs({"front","back","left","right","top","bottom"}) do
-        if peripheral.isPresent(side) then
-            print("- "..side..": "..peripheral.getType(side))
-        end
+if not adapter then
+    print("ERROR: Place computer against LOGIC ADAPTER block!")
+    print("Debug nearby blocks:")
+    for _, s in pairs({"front","back","left","right","top","bottom"}) do
+        print(s..": "..(peripheral.getType(s) or "air"))
     end
-    error("NO LOGIC ADAPTER FOUND! Place computer against Fission Reactor Logic Adapter block")
+    return
 end
 
 while true do
@@ -34,12 +27,14 @@ while true do
 
     local input = read()
     if input == "1" then
-        reactor.setActive(not reactor.isActive())
-        print("Reactor: "..(reactor.isActive() and "ACTIVATED" or "DEACTIVATED"))
+        -- HÀM CHUẨN CỦA LOGIC ADAPTER: getStatus()/setActive()
+        local current = adapter.getStatus() 
+        adapter.setActive(current == "inactive")
+        print("Reactor: "..adapter.getStatus():upper())
         sleep(1)
     elseif input == "2" then
-        reactor.setActive(false)
-        print("EMERGENCY SHUTDOWN!")
+        adapter.setActive(false)
+        print("FORCED SHUTDOWN!")
         sleep(1)
     elseif input == "0" then
         break
