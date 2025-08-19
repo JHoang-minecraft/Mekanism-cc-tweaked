@@ -1,8 +1,10 @@
-local function findReactor()
+
+local function findLogicAdapter()
     for _, side in pairs({"front","back","left","right","top","bottom"}) do
         if peripheral.isPresent(side) then
             local pType = peripheral.getType(side)
-            if pType:lower():find("reactor") then
+            if pType == "fissionReactorLogicAdapter" then
+                print("CONNECTED TO LOGIC ADAPTER ("..side..")")
                 return peripheral.wrap(side)
             end
         end
@@ -10,55 +12,36 @@ local function findReactor()
     return nil
 end
 
-local reactor = findReactor()
+local reactor = findLogicAdapter()
 
-local function loading()
-    term.clear()
-    local dots = {"", ".", "..", "...", "...."}
-    for i = 1, 5 do
-        term.setCursorPos(1,1)
-        term.write("SCANNING REACTORS"..dots[i])
-        sleep(0.2)
-    end
-end
-
-local function uninstall()
-    fs.delete("startup.lua")
-    print("UNINSTALL COMPLETE!")
-    return true
-end
-
-local function main()
-    loading()
-    
-    while true do
-        term.clear()
-        print("REACTOR CONTROL v2.0")
-        print("1. Toggle Power")
-        print("2. Emergency Stop")
-        print("9. Uninstall")
-        print("0. Exit")
-        write("> ")
-        
-        local cmd = read()
-        if cmd == "1" then
-            reactor.setActive(not reactor.isActive())
-        elseif cmd == "2" then
-            reactor.setActive(false)
-            print("EMERGENCY STOPPED!")
-            sleep(1)
-        elseif cmd == "9" then
-            if uninstall() then break end
-        elseif cmd == "0" then
-            break
+if not reactor then
+    print("DEBUG: Nearby peripherals:")
+    for _, side in pairs({"front","back","left","right","top","bottom"}) do
+        if peripheral.isPresent(side) then
+            print("- "..side..": "..peripheral.getType(side))
         end
     end
+    error("NO LOGIC ADAPTER FOUND! Place computer against Fission Reactor Logic Adapter block")
 end
 
-if reactor then
-    print("FOUND: "..peripheral.getType(reactor))
-    main()
-else
-    print("ERROR: No reactor detected nearby!")
-    print("Connect to any side of reactor block")
+while true do
+    term.clear()
+    print("MEKANISM LOGIC ADAPTER CONTROL")
+    print("1. Toggle Reactor")
+    print("2. Emergency Stop")
+    print("0. Exit")
+    write("> ")
+
+    local input = read()
+    if input == "1" then
+        reactor.setActive(not reactor.isActive())
+        print("Reactor: "..(reactor.isActive() and "ACTIVATED" or "DEACTIVATED"))
+        sleep(1)
+    elseif input == "2" then
+        reactor.setActive(false)
+        print("EMERGENCY SHUTDOWN!")
+        sleep(1)
+    elseif input == "0" then
+        break
+    end
 end
