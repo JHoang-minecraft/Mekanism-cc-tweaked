@@ -8,7 +8,7 @@
   <img src="https://img.shields.io/badge/Minecraft-CC:Tweaked-brightgreen">  
 </div>  
 
- 📌 INTRODUCTION 
+    📌 INTRODUCTION 
 A menu-driven control system** for Mekanism reactors via ComputerCraft, designed for **one-click remote management – no more memorizing commands!  
 
 ```lua
