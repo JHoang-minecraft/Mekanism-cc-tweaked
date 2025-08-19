@@ -3,7 +3,7 @@ if not fs.exists("APISystem.APICore.lua") then
     error("APPLICATION CRASHER! MISSING APICORE")
 end
 
-local API = require("APISystem.APICore")
+local API = require("APISystem.APICore") 
 print("APICore loaded successfully!")
 
 local packages = {"GPU.package", "System.package", "menu.package", "API.package"}
