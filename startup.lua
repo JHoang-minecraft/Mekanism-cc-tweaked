@@ -1,61 +1,63 @@
--- Tìm monitor và reactor logic adapter
+-- Auto-detect monitor and adapter
 local monitor, adapter
+local monitorSide
 
 for _, side in pairs({"top","bottom","left","right","front","back"}) do
-    local pType = peripheral.getType(side)
-    if pType == "monitor" then
-        monitor = peripheral.wrap(side)
-        monitor.setTextScale(0.5)
-    elseif pType == "fissionReactorLogicAdapter" then
-        adapter = peripheral.wrap(side)
-    end
+  local pType = peripheral.getType(side)
+  if pType == "monitor" then
+    monitor = peripheral.wrap(side)
+    monitor.setTextScale(0.5)
+    monitorSide = side -- Lưu hướng monitor
+  elseif pType == "fissionReactorLogicAdapter" then
+    adapter = peripheral.wrap(side)
+  end
 end
 
--- Kiểm tra kết nối
-if not monitor then print("Lỗi: Gắn monitor vào computer!") return end
-if not adapter then print("Lỗi: Đặt computer áp Logic Adapter!") return end
+-- Check connection
+if not monitor then error("No monitor connected!") end
+if not adapter then error("No reactor adapter found!") end
 
--- Hiệu ứng loading
+-- Loading animation
 local function loading()
-    monitor.clear()
-    monitor.setCursorPos(1,1)
-    for i=1,3 do
-        monitor.write("KHỞI ĐỘNG" .. string.rep(".",i))
-        sleep(0.3)
-    end
+  monitor.clear()
+  monitor.setCursorPos(1,1)
+  monitor.write("BOOTING SYSTEM")
+  for i = 1, 3 do
+    monitor.write(".")
+    sleep(0.3)
+  end
 end
 
--- Vẽ menu cảm ứng
+-- Draw touch menu
 local function drawMenu()
-    monitor.clear()
-    monitor.setCursorPos(2,2)
-    monitor.write("[1] BẬT/TẮT REACTOR")
-    monitor.setCursorPos(2,4)
-    monitor.write("[2] DỪNG KHẨN CẤP")
-    monitor.setCursorPos(2,6)
-    monitor.write("[0] THOÁT")
+  monitor.clear()
+  monitor.setCursorPos(2,2)
+  monitor.write("[1] TOGGLE REACTOR")
+  monitor.setCursorPos(2,4)
+  monitor.write("[2] EMERGENCY STOP")
+  monitor.setCursorPos(2,6)
+  monitor.write("[0] EXIT")
 end
 
--- Chạy chương trình
+-- Main program
 loading()
 drawMenu()
 
 while true do
-    local event, side, x, y = os.pullEvent("monitor_touch")
-    
-    -- Xử lý chạm vào vị trí menu
-    if y == 2 then  -- Chạm vào dòng 2 (BẬT/TẮT)
-        local status = adapter.getStatus()
-        adapter.setActive(status == "inactive")
-        monitor.setCursorPos(15,2)
-        monitor.write("["..(status == "active" and "TẮT" or "BẬT").."]")
-    elseif y == 4 then  -- Chạm vào dòng 4 (DỪNG KHẨN)
-        adapter.setActive(false)
-        monitor.setCursorPos(15,4)
-        monitor.write("[ĐÃ DỪNG]")
-        sleep(1)
-        drawMenu()
-    elseif y == 6 then  -- Chạm vào dòng 6 (THOÁT)
-        break
+  local event, side, x, y = os.pullEvent("monitor_touch")
+  
+  -- Only process touch on our monitor
+  if side == monitorSide then
+    if y == 2 then -- Toggle
+      adapter.setActive(not adapter.getActive())
+    elseif y == 4 then -- Emergency stop
+      adapter.scram()
+      monitor.setCursorPos(2,8)
+      monitor.write("REACTOR SCRAMMED!")
+      sleep(2)
+      drawMenu()
+    elseif y == 6 then -- Exit
+      break
     end
+  end
 end
