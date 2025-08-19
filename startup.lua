@@ -1,73 +1,62 @@
 local reactor = peripheral.find("fissionReactor")
 
+-- Hiệu ứng loading
 local function loading()
-    term.clear()
-    local dots = {[1]="", [2]=".", [3]="..", [4]="..."}
-    for i=1,4 do
+    for i=1,3 do
+        term.clear()
         term.setCursorPos(1,1)
-        term.write("LOADING SYSTEM"..dots[i])
-        sleep(0.15)
+        term.write("LOADING" .. string.rep(".",i))
+        sleep(0.3)
     end
 end
 
-local function install()
-    if fs.exists("startup") then
-        print("ALREADY INSTALLED!")
-        return false
-    end
-    
-    shell.run("wget https://raw.githubusercontent.com/.../mek-control.lua startup")
-    print("INSTALLED! RESTART TO USE")
-    return true
-end
-
+-- Xoá chương trình
 local function uninstall()
-    if not fs.exists("startup") then
-        print("NOT INSTALLED!")
+    if not fs.exists("startup.lua") then
+        print("ERROR: Not installed!")
         return false
     end
     
-    fs.delete("startup")
-    print("UNINSTALLED! GOODBYE")
+    fs.delete("startup.lua")
+    print("UNINSTALLED! Restart computer.")
     return true
 end
 
-local function control()
+-- Menu chính
+local function mainMenu()
     while true do
         term.clear()
-        print("MEK-CONTROL v3.0")
-        print("1.TOGGLE REACTOR")
-        print("2.EMERGENCY STOP")
-        print("3.STATUS")
-        print("9.UNINSTALL")
-        print("0.EXIT")
-        write(">")
+        print("==== MEKANISM CONTROL ====")
+        print("1. Toggle Reactor")
+        print("2. Emergency Stop")
+        print("3. Reactor Status")
+        print("9. UNINSTALL")  -- Chức năng gỡ bỏ
+        print("0. Exit")
+        write("Select: ")
 
-        local c = read()
-        if c == "1" then
+        local choice = read()
+        if choice == "1" then
             reactor.setActive(not reactor.isActivated())
-        elseif c == "2" then
+        elseif choice == "2" then
             reactor.setActive(false)
-            print("FORCED SHUTDOWN!")
+            print("EMERGENCY SHUTDOWN!")
             sleep(1)
-        elseif c == "3" then
-            print("TEMP:",reactor.getTemperature(),"K")
-            print("FUEL:",reactor.getFuel())
+        elseif choice == "3" then
+            print("Temp:", reactor.getTemperature(), "K")
+            print("Status:", reactor.isActivated() and "ACTIVE" or "INACTIVE")
             sleep(2)
-        elseif c == "9" then
-            uninstall()
-            break
-        elseif c == "0" then
+        elseif choice == "9" then
+            if uninstall() then break end  -- Thoát menu sau khi gỡ
+        elseif choice == "0" then
             break
         end
     end
 end
 
+-- Chạy chương trình
 loading()
-if not fs.exists("startup") then
-    print("FIRST RUN: INSTALL? (y/n)")
-    write(">")
-    if read() == "y" then install() end
+if reactor then
+    mainMenu()
 else
-    control()
+    print("ERROR: No reactor found!")
 end
