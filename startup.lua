@@ -2,7 +2,6 @@ local api_url = "https://raw.githubusercontent.com/JHoang-minecraft/Mekanism-cc-
 
 local function uninstall()
     print("Uninstalling Mekanism application...")
-    -- ở đây thêm code uninstall nếu cần
 end
 
 local function installer()
@@ -18,19 +17,17 @@ local function installer()
     local API = load(code)()
     print("APICore loaded successfully!")
 
-    -- fake loading các package
     local packages = {"GPU.package", "System.package", "menu.package", "API.package"}
     for _, pkg in ipairs(packages) do
         for i = 1, 20 do
             print("Loading " .. pkg .. " (" .. i .. "/20)")
-            sleep(0.1) -- chỉnh thành 2.5 giây nếu muốn chậm hơn
+            sleep(0.1) 
         end
     end
 
     print("Application Install complete! Enter Configure")
 end
 
--- menu chính
 while true do
     print("\nMekanism application:")
     print("1: Uninstall")
