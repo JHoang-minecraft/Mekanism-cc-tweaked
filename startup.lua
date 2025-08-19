@@ -1,4 +1,4 @@
-local reactor = peripheral.find("fissionReactor")
+local reactor = peripheral.find("fissionReactorLogicAdapter")
 
 local function loading()
     term.clear()
