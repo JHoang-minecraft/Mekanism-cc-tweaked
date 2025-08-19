@@ -52,7 +52,7 @@ while true do
     elseif y == 4 then  -- Chạm vào dòng 4 (DỪNG KHẨN)
         adapter.setActive(false)
         monitor.setCursorPos(15,4)
-        monitor.write("[ĐÃ DỪNG!]")
+        monitor.write("[ĐÃ DỪNG]")
         sleep(1)
         drawMenu()
     elseif y == 6 then  -- Chạm vào dòng 6 (THOÁT)
