@@ -57,13 +57,33 @@ local function drawMenu()
   monitor.setCursorPos(2,11)
   monitor.write("┌─────────────────┐")
   monitor.setCursorPos(2,12)
-  monitor.write("│ 0. Exit Program  │")
+  monitor.write("│ 3. Reactor Info  │")
   monitor.setCursorPos(2,13)
   monitor.write("└─────────────────┘")
+  
+  monitor.setCursorPos(2,15)
+  monitor.write("┌─────────────────┐")
+  monitor.setCursorPos(2,16)
+  monitor.write("│ 0. Exit Program  │")
+  monitor.setCursorPos(2,17)
+  monitor.write("└─────────────────┘")
+end
+
+-- Function to display reactor status
+local function updateStatus()
+  local status = adapter.getStatus()
+  monitor.setCursorPos(20,4)
+  monitor.write(status and "[RUNNING]" or "[STOPPED]")
+  
+  -- Display temperature in Celsius
+  local temp = adapter.getTemperature() - 273.15
+  monitor.setCursorPos(1,19)
+  monitor.write(("Temp: %.2f °C"):format(temp))
 end
 
 -- Main Program
 drawMenu()
+updateStatus()
 
 while true do
   local event, side, x, y = os.pullEvent()
@@ -76,10 +96,12 @@ while true do
     if side == monitorSide then
       -- Toggle Reactor (button row 4-5)
       if y >= 4 and y <= 5 then
-        local newState = not adapter.getActive()
-        adapter.setActive(newState)
-        monitor.setCursorPos(20,4)
-        monitor.write(newState and "[ON] " or "[OFF]")
+        if adapter.getStatus() then
+          adapter.scram()
+        else
+          adapter.activate()
+        end
+        updateStatus()
       
       -- Emergency Stop (button row 8-9)
       elseif y >= 8 and y <= 9 then
@@ -88,9 +110,22 @@ while true do
         monitor.write("[STOPPED]")
         sleep(1)
         drawMenu()
+        updateStatus()
       
-      -- Exit (button row 12-13)
+      -- Reactor Info (button row 12-13)
       elseif y >= 12 and y <= 13 then
+        monitor.setCursorPos(1,20)
+        monitor.write(("Burn Rate: %d/%d"):format(
+          adapter.getActualBurnRate(),
+          adapter.getMaxBurnRate()
+        ))
+        monitor.setCursorPos(1,21)
+        monitor.write(("Fuel: %.1f%%"):format(
+          adapter.getFuelFilledPercentage() * 100
+        ))
+      
+      -- Exit (button row 16-17)
+      elseif y >= 16 and y <= 17 then
         monitor.clear()
         monitor.setCursorPos(1,1)
         monitor.write("Program terminated")
