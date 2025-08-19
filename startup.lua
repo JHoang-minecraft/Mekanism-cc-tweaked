@@ -1,5 +1,5 @@
 
-if not fs.exists("APISystem/APICore.lua") then
+if not fs.exists("APISystem.APICore.lua") then
     error("APPLICATION CRASHER! MISSING APICORE")
 end
 
