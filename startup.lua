@@ -12,17 +12,11 @@ for _, side in pairs(peripheral.getNames()) do
   end
 end
 
--- Phần còn lại giữ nguyên như code của bạn
 for _, side in pairs({"top","bottom","left","right","front","back"}) do
   if peripheral.getType(side) == "fissionReactorLogicAdapter" then
     adapter = peripheral.wrap(side)
     break
   end
-end
--- Check if monitor is Advanced Monitor
-if not monitor or not peripheral.hasType(monitorSide, "advanced") then
-  print("ERROR: Can only use Advanced Monitor for touch!")
-  return
 end
 
 -- Find Reactor Adapter
