@@ -1,5 +1,15 @@
-# <span style="color: #FF0000; text-shadow: 0 0 5px #FF0000">M</span><span style="color: #FF4500; text-shadow: 0 0 5px #FF4500">E</span><span style="color: #FFD700; text-shadow: 0 0 5px #FFD700">K</span><span style="color: #32CD32; text-shadow: 0 0 5px #32CD32">A</span><span style="color: #00BFFF; text-shadow: 0 0 5px #00BFFF">N</span><span style="color: #9370DB; text-shadow: 0 0 5px #9370DB">I</span><span style="color: #FF00FF; text-shadow: 0 0 5px #FF00FF">S</span><span style="color: #00FF00; text-shadow: 0 0 5px #00FF00">M</span> <span style="color: #FFFFFF; background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; font-size: 1.2em">x</span> <span style="color: #FF0000">C</span><span style="color: #FF7F00">C</span>-<span style="color: #FFFF00">T</span><span style="color: #00FF00">W</span><span style="color: #0000FF">E</span><span style="color: #4B0082">A</span><span style="color: #9400D3">K</span><span style="color: #FF1493">E</span><span style="color: #00FFFF">D</span> <span style="display: inline-block; background: linear-gradient(90deg, #FF0000, #FF8C00, #FFD700, #32CD32, #00BFFF, #9370DB, #FF00FF); color: white; padding: 0 10px; border-radius: 5px">MENU CONTROL PANEL</span>
+ 🚀 MEKANISM x CC-TWEAKED MENU CONTROL PANEL  
 
-> <span style="color: #FF69B4; font-size: 1.1em">B</span><span style="color: #FF6347; font-size: 1.1em">y</span><span style="color: #00FA9A; font-size: 1.1em">:</span> <span style="background: linear-gradient(90deg, #FF0000, #FF8C00, #FFD700); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold">HycoreMC</span>  
-> <span style="color: #7CFC00">V</span><span style="color: #ADFF2F">e</span><span style="color: #32CD32">r</span><span style="color: #00FA9A">s</span><span style="color: #00FF7F">i</span><span style="color: #3CB371">o</span><span style="color: #2E8B57">n</span><span style="color: #008000">:</span> <span style="color: #00FF00; background-color: black; padding: 0 5px; border: 1px solid #00FF00">1.0.1</span>
-system Control panel mekanism menu 
+<div align="center">  
+  <img src="https://media.giphy.com/media/3o7abB06u9bNzA8lu8/giphy.gif" width="300">  
+  <br>  
+  <img src="https://img.shields.io/badge/By-HycoreMC-blue">  
+  <img src="https://img.shields.io/badge/Version-WIP-orange">  
+  <img src="https://img.shields.io/badge/Minecraft-CC:Tweaked-brightgreen">  
+</div>  
+
+ 📌 INTRODUCTION 
+A menu-driven control system** for Mekanism reactors via ComputerCraft, designed for **one-click remote management – no more memorizing commands!  
+
+```lua
+reactor.setActive(true)  -- Turn on the reactor with 1 click!
