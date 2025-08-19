@@ -12,6 +12,11 @@ for _, side in pairs(peripheral.getNames()) do
   end
 end
 
+if not monitor then
+  print("ERROR: No monitor found!")
+  return
+end
+
 for _, side in pairs({"top","bottom","left","right","front","back"}) do
   if peripheral.getType(side) == "fissionReactorLogicAdapter" then
     adapter = peripheral.wrap(side)
@@ -19,15 +24,6 @@ for _, side in pairs({"top","bottom","left","right","front","back"}) do
   end
 end
 
--- Find Reactor Adapter
-for _, side in pairs({"top","bottom","left","right","front","back"}) do
-  if peripheral.getType(side) == "fissionReactorLogicAdapter" then
-    adapter = peripheral.wrap(side)
-    break
-  end
-end
-
--- Connection Check
 if not adapter then
   monitor.clear()
   monitor.setCursorPos(1,1)
@@ -35,13 +31,21 @@ if not adapter then
   return
 end
 
--- Improved Touch Menu
+local function safeGetStatus()
+  if adapter.getStatus then
+    return adapter.getStatus()
+  elseif adapter.isActive then
+    return adapter.isActive()
+  else
+    return false
+  end
+end
+
 local function drawMenu()
   monitor.clear()
   monitor.setCursorPos(1,1)
   monitor.write("=== REACTOR CONTROL ===")
   
-  -- Draw buttons with borders
   monitor.setCursorPos(2,3)
   monitor.write("┌─────────────────┐")
   monitor.setCursorPos(2,4)
@@ -71,68 +75,70 @@ local function drawMenu()
   monitor.write("└─────────────────┘")
 end
 
--- Function to display reactor status
 local function updateStatus()
-  local status = adapter.getStatus()
+  local status = safeGetStatus()
   monitor.setCursorPos(20,4)
   monitor.write(status and "[RUNNING]" or "[STOPPED]")
   
-  -- Display temperature in Celsius
-  local temp = adapter.getTemperature() - 273.15
-  monitor.setCursorPos(1,19)
-  monitor.write(("Temp: %.2f °C"):format(temp))
+  if adapter.getTemperature then
+    local temp = adapter.getTemperature() - 273.15
+    monitor.setCursorPos(1,19)
+    monitor.write(("Temp: %.2f °C"):format(temp))
+  end
 end
 
--- Main Program
 drawMenu()
 updateStatus()
 
 while true do
   local event, side, x, y = os.pullEvent()
   
-  -- Debug touch coordinates
-  if event == "monitor_touch" then
-    print("Touch at:", x, y)
-    
-    -- Check if touch is on our monitor
-    if side == monitorSide then
-      -- Toggle Reactor (button row 4-5)
-      if y >= 4 and y <= 5 then
-        if adapter.getStatus() then
-          adapter.scram()
-        else
+  if event == "monitor_touch" and side == monitorSide then
+    -- Toggle Reactor
+    if y >= 4 and y <= 5 then
+      if safeGetStatus() then
+        adapter.scram()
+      else
+        if adapter.activate then
           adapter.activate()
         end
-        updateStatus()
-      
-      -- Emergency Stop (button row 8-9)
-      elseif y >= 8 and y <= 9 then
+      end
+      updateStatus()
+    
+    -- Emergency Stop
+    elseif y >= 8 and y <= 9 then
+      if adapter.scram then
         adapter.scram()
-        monitor.setCursorPos(20,8)
-        monitor.write("[STOPPED]")
-        sleep(1)
-        drawMenu()
-        updateStatus()
-      
-      -- Reactor Info (button row 12-13)
-      elseif y >= 12 and y <= 13 then
+      end
+      monitor.setCursorPos(20,8)
+      monitor.write("[STOPPED]")
+      sleep(1)
+      drawMenu()
+      updateStatus()
+    
+    -- Reactor Info
+    elseif y >= 12 and y <= 13 then
+      if adapter.getActualBurnRate and adapter.getMaxBurnRate then
         monitor.setCursorPos(1,20)
         monitor.write(("Burn Rate: %d/%d"):format(
           adapter.getActualBurnRate(),
           adapter.getMaxBurnRate()
         ))
+      end
+      
+      if adapter.getFuelFilledPercentage then
         monitor.setCursorPos(1,21)
         monitor.write(("Fuel: %.1f%%"):format(
           adapter.getFuelFilledPercentage() * 100
         ))
-      
-      -- Exit (button row 16-17)
-      elseif y >= 16 and y <= 17 then
-        monitor.clear()
-        monitor.setCursorPos(1,1)
-        monitor.write("Program terminated")
-        return
       end
+    
+    -- Exit
+    elseif y >= 16 and y <= 17 then
+      monitor.clear()
+      monitor.setCursorPos(1,1)
+      monitor.write("Program terminated")
+      return
     end
   end
 end
