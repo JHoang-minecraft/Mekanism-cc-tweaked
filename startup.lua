@@ -37,8 +37,10 @@ while true do
     local choice = read()
     if choice == "1" then
         uninstall()
+        break
     elseif choice == "2" then
         installer()
+        break
     elseif choice == "3" then
         print("Exiting...")
         break
