@@ -1,16 +1,24 @@
--- Auto-detect Advanced Monitor
+
 local monitor, adapter
 local monitorSide = nil
 
-for _, side in pairs({"top","bottom","left","right","front","back"}) do
-  if peripheral.getType(side) == "monitor" then
+for _, side in pairs(peripheral.getNames()) do
+  local pType = peripheral.getType(side)
+  if pType == "monitor" then
     monitor = peripheral.wrap(side)
+    monitorSide = side:match("^(%w+)%_") or side
     monitor.setTextScale(0.5)
-    monitorSide = side
     break
   end
 end
 
+-- Phần còn lại giữ nguyên như code của bạn
+for _, side in pairs({"top","bottom","left","right","front","back"}) do
+  if peripheral.getType(side) == "fissionReactorLogicAdapter" then
+    adapter = peripheral.wrap(side)
+    break
+  end
+end
 -- Check if monitor is Advanced Monitor
 if not monitor or not peripheral.hasType(monitorSide, "advanced") then
   print("ERROR: Can only use Advanced Monitor for touch!")
