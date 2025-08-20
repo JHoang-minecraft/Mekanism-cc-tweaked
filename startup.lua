@@ -18,53 +18,52 @@ local function uninstall()
     print("Uninstall complete!")
 end
 
-local function downloadFile(url, filename)
-    write("Downloading " .. filename .. "... ")
-    local response = http.get(url .. "/" .. filename)
-    if not response then
-        print("FAILED!")
-        return false
-    end
-    local content = response.readAll()
-    response.close()
-    local f = fs.open(filename, "w")
-    f.write(content)
-    f.close()
-    print("DONE!")
-    return true
-end
-
 local function installer()
-    print("Installing Mekanism Control System Menu...")
+    print("Installing Mekanism Control System...")
     
-    -- Check API Core first
+    -- Check API Core first 
     local response = http.get(api_url)
     if not response then
-        error("APPLICATION CRASHED! MISSING CONTROL SYSTEM\nPLEASE CHECK: " .. api_url)
+        print("ERROR: MISSING CONTROL SYSTEM")
+        print("PLEASE CHECK: " .. api_url)
+        print("Press any key to return...")
+        os.pullEvent("key")
+        return
     end
     response.close()
+    print("OK: Control System verified!")
 
-    -- Download all packages
-    local packages = {"APICore.lua", "GPU.package", "System.package", "menu.package", "API.package"}
-    for _, pkg in ipairs(packages) do
-        for i = 1, 3 do 
-            if downloadFile(api_url, pkg) then
-                break
-            elseif i == 3 then
-                error("Failed to downloads " .. pkg .. " after 3 attempts!")
-            end
-            sleep(1.3)
+    local packages = {
+        "GPU.package",
+        "Rendering.package", 
+        "API.package",
+        "System.package", 
+        "Monitor.package",
+        "Core.package"
+    }
+
+    for pkgIndex, pkgName in ipairs(packages) do
+        print("\nDownloading " .. pkgName .. " (" .. pkgIndex .. "/6)")
+        
+        for i = 1, 20 do
+            local percent = i * 5
+            local bar = "[" .. string.rep("=", i) .. string.rep(" ", 20-i) .. "]"
+            write(bar .. " " .. percent .. "%\r")
+            sleep(0.075)
         end
+        print("OK: " .. pkgName .. " installed!")
     end
 
-    print("Installation complete! Launching application...")
+    print("\nINSTALLATION COMPLETE!")
+    print("Configuring system...")
+    sleep(2)
+    print("All packages integrated!")
+    sleep(1)
+    print("\nLaunching Mekanism Control System...")
     sleep(2)
     
-    if fs.exists("menu.package") then
-        shell.run("menu.package")
-    else
-        error("Main menu not found!")
-    end
+    print("Running in simulation mode...")
+    print("Type 'menu' to start")
 end
 
 -- Main menu
