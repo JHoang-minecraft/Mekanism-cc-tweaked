@@ -31,10 +31,10 @@ function config.checkReactor()
     print("Checking reactor on [" .. config.data.reactorSide .. "]...")
     local reactor = peripheral.wrap(config.data.reactorSide)
     if reactor and peripheral.getType(config.data.reactorSide) == "fissionReactor" then
-        print("✅ CONNECTED: " .. peripheral.getType(config.data.reactorSide))
+        print(" CONNECTED: " .. peripheral.getType(config.data.reactorSide))
         return true
     else
-        print("❌ MISSING: No reactor found!")
+        print(" MISSING: No reactor found!")
         return false
     end
 end
@@ -155,7 +155,7 @@ function config.checkUpdates()
     print("=== SYSTEM UPDATE ===")
     print("Checking GitHub...")
     sleep(2)
-    print("✅ System up to date!")
+    print(" System up to date!")
     print("")
     print("[[ CHECK AGAIN ]]")
     print("[[ BACK ]]")
