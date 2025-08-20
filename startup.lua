@@ -1,3 +1,4 @@
+shell.setAlias("config", "configuration.lua")
 local api_url = "https://raw.githubusercontent.com/JHoang-minecraft/Mekanism-cc-tweaked/refs/heads/main/ReactorsControl/ControlSystem.lua"
 
 local function uninstall()
