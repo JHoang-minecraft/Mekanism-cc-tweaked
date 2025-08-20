@@ -71,7 +71,7 @@ end
 while true do
     term.clear()
     term.setCursorPos(1,1)
-    print("=== MEKANISM CONTROL SYSTEM ===")
+    print("=== MEKANISM CONTROL SYSTEM MENU ===")
     print("1: Install")
     print("2: Uninstall") 
     print("3: Exit")
