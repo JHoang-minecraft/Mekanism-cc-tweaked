@@ -38,7 +38,7 @@ local function installer()
     print("Installing Mekanism Control System...")
     
     -- Check API Core first
-    local response = http.get(api_url .. "/ControlSystem.lua")
+    local response = http.get(api_url)
     if not response then
         error("APPLICATION CRASHED! MISSING CONTROL SYSTEM\nPLEASE CHECK: " .. api_url)
     end
