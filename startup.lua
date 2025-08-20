@@ -1,4 +1,4 @@
-local api_url = "https://raw.githubusercontent.com/JHoang-minecraft/Mekanism-cc-tweaked/refs/heads/main/APISystem/APICore.lua"
+local api_url = "https://raw.githubusercontent.com/JHoang-minecraft/Mekanism-cc-tweaked/refs/heads/main/ReactorsControl/ControlSystem"
 
 local function uninstall()
     print("Uninstalling Mekanism application...")
@@ -8,7 +8,8 @@ local function installer()
     -- check APICore
     local response = http.get(api_url)
     if not response then
-        error("APPLICATION CRASHER! MISSING APICORE")
+        error("APPLICATION CRASHER! MISSING CONTROL SYSTEM")
+        error("PLEASE CHECK https://github.com/JHoang-minecraft/Mekanism-cc-tweaked/tree/main/ReactorsControl ")
     end
 
     local code = response.readAll()
