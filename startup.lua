@@ -49,7 +49,7 @@ local function installer()
             local percent = i * 5
             local bar = "[" .. string.rep("=", i) .. string.rep(" ", 20-i) .. "]"
             write(bar .. " " .. percent .. "%\r")
-            sleep(0.075)
+            sleep(1)
         end
         print("OK: " .. pkgName .. " installed!")
     end
