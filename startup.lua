@@ -51,7 +51,7 @@ local function installer()
             if downloadFile(api_url, pkg) then
                 break
             elseif i == 3 then
-                error("Failed to download " .. pkg .. " after 3 attempts!")
+                error("Failed to downloads " .. pkg .. " after 3 attempts!")
             end
             sleep(1.3)
         end
