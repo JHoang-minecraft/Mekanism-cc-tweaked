@@ -35,7 +35,7 @@ local function downloadFile(url, filename)
 end
 
 local function installer()
-    print("Installing Mekanism Control System...")
+    print("Installing Mekanism Control System Menu...")
     
     -- Check API Core first
     local response = http.get(api_url)
