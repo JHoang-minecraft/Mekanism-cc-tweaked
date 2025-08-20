@@ -1,4 +1,4 @@
-shell.setAlias("config", "configuration.lua")
+
 local api_url = "https://raw.githubusercontent.com/JHoang-minecraft/Mekanism-cc-tweaked/refs/heads/main/ReactorsControl/ControlSystem.lua"
 
 local function uninstall()
@@ -91,3 +91,36 @@ while true do
         os.pullEvent("key")
     end
 end
+
+shell.setAlias("config", function()
+    local configURL = "https://raw.githubusercontent.com/JHoang-minecraft/Mekanism-cc-tweaked/refs/heads/main/MenuConfiguration/Configuration.lua"
+    
+    if not _configCache or os.time() - _configCache.time > 3600 then
+        print("Downloading latest configuration...")
+        local response = http.get(configURL)
+        if not response then
+            print("❌ Network error! Using cache...")
+            if _configCache then
+                _configCache.fn()
+                return
+            end
+            return
+        end
+        
+        local code = response.readAll()
+        response.close()
+        
+        local fn, err = load(code, "=Configuration", "t", _ENV)
+        if not fn then
+            print("❌ Load error: " .. err)
+            return
+        end
+        
+        _configCache = {
+            fn = fn,
+            time = os.time()
+        }
+    end
+    
+    _configCache.fn()
+end)
