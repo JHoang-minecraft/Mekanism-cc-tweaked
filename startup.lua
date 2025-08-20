@@ -92,35 +92,28 @@ while true do
     end
 end
 
-shell.setAlias("config", function()
+local function setupConfigCommand()
     local configURL = "https://raw.githubusercontent.com/JHoang-minecraft/Mekanism-cc-tweaked/refs/heads/main/MenuConfiguration/Configuration.lua"
     
-    if not _configCache or os.time() - _configCache.time > 3600 then
-        print("Downloading latest configuration...")
-        local response = http.get(configURL)
-        if not response then
-            print("❌ Network error! Using cache...")
-            if _configCache then
-                _configCache.fn()
-                return
-            end
-            return
-        end
-        
-        local code = response.readAll()
-        response.close()
-        
-        local fn, err = load(code, "=Configuration", "t", _ENV)
-        if not fn then
-            print("❌ Load error: " .. err)
-            return
-        end
-        
-        _configCache = {
-            fn = fn,
-            time = os.time()
-        }
+    print("Downloading configuration command...")
+    local response = http.get(configURL)
+    if not response then
+        print("❌ Failed to download config command")
+        return false
     end
     
-    _configCache.fn()
-end)
+    local content = response.readAll()
+    response.close()
+
+    local file = fs.open("config.lua", "w")
+    file.write(content)
+    file.close()
+    
+
+    shell.setAlias("config", "Configuration.lua")
+    print("✅ Type 'config' to open configuration menu")
+    return true
+end
+
+-- Chạy hàm setup config
+setupConfigCommand()
